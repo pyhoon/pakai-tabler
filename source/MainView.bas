@@ -136,7 +136,7 @@ Private Sub PageBody As MiniHtml
 	Dim a1 As MiniHtml = Anchor.up(div1)
 	a1.cls("navbar-brand me-0 me-lg-2 pt-2")
 	a1.attr("href", "#")
-	Icon.up(a1).cls("bi bi-infinity h3")
+	Icon.up(a1).cls("bi bi-infinity")
 	Dim a2 As MiniHtml = Anchor.up(div1)
 	a2.cls("navbar-brand")
 	a2.attr("href", "$SERVER_URL$")
@@ -155,7 +155,7 @@ Private Sub PageBody As MiniHtml
 	Dim list1 As MiniHtml = Li.up(ulist1)
 	list1.cls("nav-item d-block d-lg-none")
 	Dim a1 As MiniHtml = Anchor.up(list1)
-	a1.cls("nav-link float-end")
+	a1.cls("nav-link float-end text-dark")
 	a1.attr("href", "https://paypal.me/aeric80/")
 	a1.attr("target", "_blank")
 	Dim img1 As MiniHtml = Img.up(a1)
@@ -185,16 +185,16 @@ Private Sub PageBody As MiniHtml
 	Span.up(div1).cls("small").text("Version: $VERSION$")
 	If mContent.IsInitialized Then mContent.up(padding2)
 	If mSubContent.IsInitialized Then mSubContent.up(padding2)
+	Div.up(padding2).cls("bottom")
 	If mModal.IsInitialized Then mModal.up(body1)
-	Div.up(body1).cls("bottom")
 	Return body1
 End Sub
 
 Private Sub BodyFooter As MiniHtml
 	Dim footer1 As MiniHtml = CreateTag("footer")
-	footer1.cls("footer mt-auto py-3 bg-body-tertiary border-top")
+	footer1.cls("footer mt-auto py-3 border-top")
 	Dim small1 As MiniHtml = Div.up(footer1)
-	small1.cls("footer small text-center d-md-block")
+	small1.cls("small text-center d-md-block")
 	small1.sty("font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif")
 	Dim caption1 As MiniHtml = CreateTag("caption").up(small1)
 	caption1.text("$APP_COPYRIGHT$")

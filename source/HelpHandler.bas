@@ -134,6 +134,7 @@ Private Sub GenerateHelpPage As String 'ignore
 	link1.attr("href", "/static/img/favicon.png")
 	'head1.cdn("style", "/dist/css/tabler.min.css") 'local
 	head1.cdn("style", "https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/css/tabler.min.css") 'cdns
+	head1.cdn("style", "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css")
 	Dim sty1 As MiniHtml = CreateTag("style").up(head1)
 	Dim cssFolder As String = File.Combine(File.Combine(Main.App.staticfiles.Folder, "dist"), "css")
 	If File.Exists(cssFolder, "help.css") Then
@@ -162,7 +163,7 @@ Private Sub GenerateHelpPage As String 'ignore
 	a1.cls("navbar-brand me-0 me-lg-2")
 	a1.attr("href", "#")
 	Dim i1 As MiniHtml = Icon.up(a1)
-	i1.cls("bi bi-gear h3")
+	i1.cls("bi bi-gear")
 	Dim a2 As MiniHtml = Anchor.up(div1)
 	a2.cls("navbar-brand font-weight-bold")
 	a2.attr("href", "#")
@@ -266,10 +267,10 @@ Private Sub GenerateHelpPage As String 'ignore
 	Dim div6 As MiniHtml = Div.up(body1)
 	div6.cls("bottom")
 	Dim footer1 As MiniHtml = CreateTag("footer").up(body1)
-	footer1.cls("footer pl-4 pt-2 pb-2")
+	footer1.cls("pl-4 pt-2 pb-2")
 	footer1.multiline
 	Dim div7 As MiniHtml = Div.up(footer1)
-	div7.cls("footer small text-light text-center d-md-block")
+	div7.cls("small text-light text-center d-md-block")
 	div7.sty("font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;")
 	div7.multiline
 	Dim caption1 As MiniHtml = CreateTag("caption").up(div7)
@@ -682,7 +683,7 @@ Private Sub GenerateAccordion (section As VerbSection) As MiniHtml
 End Sub
 
 Private Sub GenerateAccordionHead (section As VerbSection) As MiniHtml
-	Dim h21 As MiniHtml = CreateTag("h2")
+	Dim h21 As MiniHtml = CreateTag("div")
 	h21.cls("accordion-header")
 	h21.attr("id", $"${section.ElementId}-heading"$)
 	h21.multiline
@@ -927,11 +928,17 @@ Private Sub GetStyles As String
 	cb1.Property("font-family", "Arial, Helvetica, Tahoma, Times New Roman")
 	cb1.Property("font-size", "0.8em")
 	
+	cb1.Rule(".accordion-item:first-child .accordion-button")
+	cb1.ParseRaw("border-top-left-radius: var(--tblr-border-radius);border-top-right-radius: var(--tblr-border-radius);")
+	
+	cb1.ParseRawWithRules(".accordion-item:last-child .accordion-button.collapsed", _
+	"border-bottom-left-radius: var(--tblr-border-radius);border-bottom-right-radius: var(--tblr-border-radius);")
+	
 	cb1.Rule(".accordion-button-green")
-	cb1.ParseRaw("color: #fff;background: #16a34a;box-shadow: none;")
+	cb1.ParseRaw("color: #fff;background-color: #16a34a;box-shadow: none;")
 	
 	cb1.ParseRawWithRules(".accordion-button-green:not(.collapsed)", _
-	"color: #fff;background: #16a34a;")
+	"color: #fff;background-color: #16a34a;")
 	
 	cb1.Rule(".accordion-button-purple")
 	cb1.ParseRaw("color: #fff;background: #9333ea;box-shadow: none;")
