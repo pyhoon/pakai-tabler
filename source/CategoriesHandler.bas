@@ -131,7 +131,7 @@ Private Sub RenderPage
 		a1.cls("nav-link float-end")
 		a1.text("Home")
 		Dim i1 As MiniHtml = Icon.up(a1)
-		i1.cls("bi bi-house me-2")
+		i1.cls("bi bi-house mx-2")
 		i1.attr("title", "Home")
 
 		If App.api.EnableHelp Then
@@ -141,7 +141,7 @@ Private Sub RenderPage
 			a2.cls("nav-link float-end")
 			a2.text("API")
 			Dim i2 As MiniHtml = Icon.up(a2)
-			i2.cls("bi bi-gear me-2")
+			i2.cls("bi bi-gear mx-2")
 			i2.attr("title", "API")
 		End If
 
@@ -196,7 +196,7 @@ Private Sub ContentContainer As MiniHtml
 	button2.attr("hx-trigger", "click")
 	button2.attr("data-bs-toggle", "modal")
 	button2.attr("data-bs-target", "#modal-container")
-	Icon.up(button2).cls("bi bi-plus-lg me-2")
+	Icon.up(button2).cls("bi bi-plus-lg mx-2")
 	button2.text("Add Category")
 
 	Dim container1 As MiniHtml = Div.up(col1)
@@ -238,7 +238,7 @@ Private Sub ToastContainer As MiniHtml
 	div3.text("Operation successful!")
 	Dim button1 As MiniHtml = Button.up(div2)
 	button1.attr("type", "button")
-	button1.cls("btn-close btn-close-white me-2 m-auto")
+	button1.cls("btn-close btn-close-white m-auto")
 	button1.attr("data-bs-dismiss", "toast")
 	Return div1
 End Sub

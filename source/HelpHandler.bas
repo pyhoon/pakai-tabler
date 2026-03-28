@@ -205,7 +205,7 @@ Private Sub GenerateHelpPage As String 'ignore
 	a5.attr("href", "/")
 	a5.cls("nav-link text-dark float-end")
 	Dim i2 As MiniHtml = Icon.up(a5)
-	i2.cls("bi bi-house me-2")
+	i2.cls("bi bi-house mx-2")
 	i2.attr("title", "Home")
 	
 	Dim div2 As MiniHtml = Div.up(body1)
@@ -696,7 +696,7 @@ Private Sub GenerateAccordionHead (section As VerbSection) As MiniHtml
 	button1.multiline
 	Dim span1 As MiniHtml = Span.up(button1)
 	span1.sty("width: 60px")
-	span1.cls($"badge badge-${section.Color} text-secondary py-1 me-2"$)
+	span1.cls($"badge badge-${section.Color} text-secondary py-1 mx-2"$)
 	span1.text(section.Verb)
 	Dim strAuthenticate As String = WebApiUtils.ProperCase(section.Authenticate)
 	If UseAuthenticate(strAuthenticate) Then
@@ -818,7 +818,7 @@ Private Sub GenerateAccordionBody (section As VerbSection) As MiniHtml
 	button1.FormatAttributes = True
 	button1.multiline
 	Dim span3 As MiniHtml = Span.up(button1)
-	span3.cls("htmx-indicator spinner-border spinner-border-sm me-2")
+	span3.cls("htmx-indicator spinner-border spinner-border-sm mx-2")
 	Dim strong6 As MiniHtml = Strong.up(button1)
 	strong6.text("Submit")
 	

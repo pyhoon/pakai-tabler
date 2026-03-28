@@ -135,7 +135,7 @@ Private Sub RenderPage
 		a1.cls("nav-link float-end")
 		a1.text("Categories")
 		Dim i1 As MiniHtml = Icon.up(a1)
-		i1.cls("bi bi-tag me-2")
+		i1.cls("bi bi-tag mx-2")
 		i1.attr("title", "Categories")
 		'a1.text("Categories")
 
@@ -147,7 +147,7 @@ Private Sub RenderPage
 			a2.cls("nav-link float-end")
 			a2.text("API")
 			Dim i2 As MiniHtml = Icon.up(a2)
-			i2.cls("bi bi-gear me-2")
+			i2.cls("bi bi-gear mx-2")
 			i2.attr("title", "API")
 		End If
 
@@ -202,8 +202,8 @@ Private Sub ContentContainer As MiniHtml
 	Dim div2 As MiniHtml = Div.up(col2).cls("float-end mt-2")
 	'Dim a1 As MiniHtml = Anchor.up(div2)
 	'a1.attr("href", "$SERVER_URL$/categories")
-	'a1.cls("btn btn-primary me-2")
-	'Icon.up(a1).cls("bi bi-list me-2")
+	'a1.cls("btn btn-primary mx-2")
+	'Icon.up(a1).cls("bi bi-list mx-2")
 	'a1.text("Show Category")
 
 	Dim button2 As MiniHtml = Button.up(div2)
@@ -213,7 +213,7 @@ Private Sub ContentContainer As MiniHtml
 	button2.attr("hx-trigger", "click")
 	button2.attr("data-bs-toggle", "modal")
 	button2.attr("data-bs-target", "#modal-container")
-	Icon.up(button2).cls("bi bi-plus-lg me-2")
+	Icon.up(button2).cls("bi bi-plus-lg mx-2")
 	button2.text("Add Product")
 
 	Dim container1 As MiniHtml = Div.up(col12)
@@ -283,7 +283,7 @@ Private Sub ToastContainer As MiniHtml
 	div3.text("Operation successful!")
 	Dim button1 As MiniHtml = Button.up(div2)
 	button1.attr("type", "button")
-	button1.cls("btn-close btn-close-white me-2 m-auto")
+	button1.cls("btn-close btn-close-white m-auto")
 	button1.attr("data-bs-dismiss", "toast")
 	Return div1
 End Sub
