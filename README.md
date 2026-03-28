@@ -5,7 +5,7 @@ Version: 6.51
 Create Web API or Application Backend Server using B4J project template
 
 ### Preview
-![Index](pakai-index.png)
+<img src="pakai-index.png" title="Index" width="600">
 
 ---
 
