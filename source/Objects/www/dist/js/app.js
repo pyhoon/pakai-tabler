@@ -8,7 +8,7 @@ document.addEventListener('entity:changed', (e) => {
     
     // Close the modal
     const modalEl = document.getElementById('modal-container');
-    const modal = bootstrap.Modal.getInstance(modalEl);
+    const modal = tabler.Modal.getInstance(modalEl);
     if (modal) modal.hide();
     
     // Update toast content
@@ -16,11 +16,11 @@ document.addEventListener('entity:changed', (e) => {
     const toastMsg = document.getElementById('toast-body');
     toastMsg.textContent = message || `${entity} ${action} successful`;
     
-    // Reset & apply Bootstrap background class
+    // Reset & apply Tabler background class
     toastEl.className = `toast align-items-center border-0 text-bg-${status || 'success'}`;
     
     // Show toast
-    const toast = bootstrap.Toast.getOrCreateInstance(toastEl);
+    const toast = tabler.Toast.getOrCreateInstance(toastEl);
     toast.show();
     console.info(`[HTMX] ${entity} ${action} completed`);
 });
@@ -31,7 +31,7 @@ document.addEventListener('htmx:responseError', function (event) {
     document.getElementById('toast-body').textContent = 'Network error occurred. Please try again.';
     
     const toastEl = document.getElementById('toast-container');
-    bootstrap.Toast.getOrCreateInstance(toastEl).show();
+    tabler.Toast.getOrCreateInstance(toastEl).show();
 
     console.info('Network error occurred.');
 });
