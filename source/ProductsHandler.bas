@@ -311,7 +311,8 @@ Private Sub HandleSearch
 	DB.Open
 	DB.Table = "tbl_products p"
 	DB.Columns = Array("p.id id", "p.category_id catid", "c.category_name category", "p.product_code code", "p.product_name AS name", "p.product_price price")
-	DB.Join = Array("tbl_categories c", "p.category_id = c.id")
+	'DB.Join = Array("tbl_categories c", "p.category_id = c.id")
+	DB.Join = DB.CreateJoin("LEFT", "tbl_categories AS c", Array("p.category_id = c.id"))
 	Dim keyword As String = Request.GetParameter("keyword")
 	If keyword <> "" Then
 		DB.Conditions = Array("p.product_code LIKE ? Or UPPER(p.product_name) LIKE ? Or UPPER(c.category_name) LIKE ?")
@@ -517,7 +518,8 @@ Private Sub CreateProductsTable As MiniHtml
 	DB.Open
 	DB.Table = "tbl_products p"
 	DB.Columns = Array("p.id id", "p.category_id catid", "c.category_name category", "p.product_code code", "p.product_name name", "p.product_price price")
-	DB.Join = Array("tbl_categories c", "p.category_id = c.id")
+	'DB.Join = Array("tbl_categories c", "p.category_id = c.id")
+	DB.Join = DB.CreateJoin("LEFT", "tbl_categories AS c", Array("p.category_id = c.id"))
 	DB.OrderBy = CreateMap("p.id": "DESC")
 	DB.Query
 	Dim rows As List = DB.Results

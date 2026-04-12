@@ -99,7 +99,8 @@ Private Sub GetAllProducts
 	DB.Open
 	DB.Table = "tbl_products p"
 	DB.Columns = Array("p.id id", "p.category_id catid", "c.category_name category", "p.product_code code", "p.product_name name", "p.product_price price")
-	DB.Join = Array("tbl_categories c", "p.category_id = c.id")
+	'DB.Join = Array("tbl_categories c", "p.category_id = c.id")
+	DB.Join = DB.CreateJoin("LEFT", "tbl_categories AS c", Array("p.category_id = c.id"))
 	DB.OrderBy = CreateMap("p.id": "")
 	DB.Query
 	If DB.Error.IsInitialized Then
@@ -118,7 +119,8 @@ Public Sub GetProductsByCategoryId (id As Int)
 	DB.Open
 	DB.Table = "tbl_products p"
 	DB.Columns = Array("p.id id", "p.category_id catid", "c.category_name category", "p.product_code code", "p.product_name name", "p.product_price price")
-	DB.Join = Array("tbl_categories c", "p.category_id = c.id")
+	'DB.Join = Array("tbl_categories c", "p.category_id = c.id")
+	DB.Join = DB.CreateJoin("LEFT", "tbl_categories AS c", Array("p.category_id = c.id"))
 	DB.Condition = "c.id = ?"
 	DB.Parameter = id
 	DB.OrderBy = CreateMap("p.id": "")
@@ -159,7 +161,8 @@ Public Sub SearchByKeywords
 	DB.Open
 	DB.Table = "tbl_products p"
 	DB.Columns = Array("p.id id", "p.category_id catid", "c.category_name category", "p.product_code code", "p.product_name AS name", "p.product_price price")
-	DB.Join = Array("tbl_categories c", "p.category_id = c.id")
+	'DB.Join = Array("tbl_categories c", "p.category_id = c.id")
+	DB.Join = DB.CreateJoin("LEFT", "tbl_categories AS c", Array("p.category_id = c.id"))
 	If SearchForText <> "" Then
 		DB.Conditions = Array("p.product_code LIKE ? Or UPPER(p.product_name) LIKE ? Or UPPER(c.category_name) LIKE ?")
 		DB.Parameters = Array("%" & SearchForText & "%", "%" & SearchForText.ToUpperCase & "%", "%" & SearchForText.ToUpperCase & "%")
