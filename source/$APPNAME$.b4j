@@ -18,23 +18,20 @@ Library4=minihtml
 Library5=minijs
 Library6=miniormutils
 Library7=webapiutils
-Module1=CategoriesApiHandler
-Module2=CategoriesHandler
-Module3=FindApiHandler
-Module4=HelpHandler
-Module5=HttpsFilter
-Module6=MainView
-Module7=ProductsApiHandler
-Module8=ProductsHandler
+Module1=CategoriesHandler
+Module2=HttpsFilter
+Module3=MainView
+Module4=MH
+Module5=ProductsHandler
 NumberOfFiles=4
 NumberOfLibraries=7
-NumberOfModules=8
+NumberOfModules=5
 Version=10.5
 @EndOfDesignText@
-#Region Project Attributes
-' Product: Pakai Tabler
-' Version: 6.51
-' License: MIT License
+#Region  Project Attributes
+' Product:   Pakai Tabler
+' Version:   6.60
+' License:   MIT License
 ' Developer: Poon Yip Hoon (Aeric)
 #CommandLineArgs:
 #MergeLibraries: True
@@ -46,52 +43,38 @@ Version=10.5
 #Else
 #AdditionalJar: sqlite-jdbc-3.7.2
 #End If
-#Region Macros
-#Macro: Title, GetLibraries, ide://run?file=%ADDITIONAL%\..\B4X\libget.jar&args=%PROJECT%&librariesrefresh=True
-'#Macro: Title, GetResources, ide://run?file=%ADDITIONAL%\..\B4X\resget.jar&args=%PROJECT%&args=true
-'#Macro: Title, Backup, ide://run?file=%JAVABIN%\jar.exe&WorkingDirectory=..&Args=-cMf&Args=%PROJECT_NAME%.zip&args=Files&args=Objects\www&args=Objects\config.*&args=Objects\LICENSE&args=*.bas&args=*.b4j&args=*.b4j.meta&args=libs.json
-'#Macro: Title, Objects, ide://run?file=%WINDIR%\SysWOW64\explorer.exe&args=%PROJECT%\Objects
+#Region  Macros
+#Macro: Title, ModelGenerator, ide://run?file=%ADDITIONAL%\modgen.jar&Args=%STATE1%&codesync=True
+#Macro: Title, GetLibraries, ide://run?file=%ADDITIONAL%\libget.jar&args=%PROJECT%&librariesrefresh=True
+#Macro: Title, GetResources, ide://run?file=%ADDITIONAL%\resget.jar&args=%PROJECT%&args=true
+'#Macro: Title, Backup, ide://run?file=%JAVABIN%\jar.exe&WorkingDirectory=..&Args=-cMf&Args=%PROJECT_NAME%.zip&args=Files&args=Objects\www&args=Objects\config.ini&args=Objects\LICENSE&args=*.bas&args=*.b4j&args=*.b4j.meta&args=libs.json
 '#Macro: Title, Distribute, ide://run?file=%JAVABIN%\jar.exe&WorkingDirectory=../Objects&args=-cMf&args=Dist.zip&args=www&args=*.jar&args=*.ini
+'#Macro: Title, Objects, ide://run?file=%WINDIR%\SysWOW64\explorer.exe&args=%PROJECT%\Objects
 #End Region
 Sub Process_Globals
-	Public DB 					As MiniORM
-	Public MS 					As ORMSettings
-	Public App 					As EndsMeet
-	Public Api 					As ApiSettings
-	Public Const COLOR_RED 		As Int = 0xFFFF0000 '-65536
-	Public Const COLOR_BLUE 	As Int = 0xFF0000FF '-16776961
-	Public Const VERSION 		As String = "6.51"
+	Public DB 				As MiniORM
+	Public App 				As EndsMeet
+	Public DBS 				As MiniORMSettings
+	Public Const VERSION 	As String = "6.60"
+	Public Const COLOR_RED 	As Int = 0xFFFF0000
+	Public Const COLOR_BLUE As Int = 0xFF0000FF
 End Sub
 
 ' <link>Open in browser|http://127.0.0.1:8080</link>
 ' <link>Donate|https://paypal.me/aeric80/</link> | <link>Forum|https://www.b4x.com/android/forum/threads/web-project-template-pakai-server-v6.169224/</link> | <link>GitHub|https://github.com/pyhoon/pakai-server-b4j</link>
 Sub AppStart (Args() As String)
 	App.Initialize
-	'App.ctx = App.srvr.CreateThreadSafeMap
 	App.LoadConfig
 	App.LogEnabled = True
 	#If Release
 	'App.ssl.Enabled = True
 	'App.RedirectToHttps = True
 	#End If
+	' Frontend using HTMX and AlpineJS
 	App.Get("", "ProductsHandler")
 	App.Get("/categories", "CategoriesHandler")
 	App.Rest("/hx/products/*", "ProductsHandler")
 	App.Rest("/hx/categories/*", "CategoriesHandler")
-	
-	' Use API
-	Api = App.api
-	App.Get("/api/find", "FindApiHandler")
-	App.Post("/api/find", "FindApiHandler")
-	App.Get("/api/find/products-by-category_id/*", "FindApiHandler")
-	App.Get("/api/products", "ProductsApiHandler")
-	App.Post("/api/products", "ProductsApiHandler")
-	App.Get("/api/categories", "CategoriesApiHandler")
-	App.Post("/api/categories", "CategoriesApiHandler")
-	App.Rest("/api/products/*", "ProductsApiHandler")
-	App.Rest("/api/categories/*", "CategoriesApiHandler")	
-	App.Get("/help", "HelpHandler")	
-	Api.EnableHelp = True
 	
 	App.Start
 	App.LogStartupMessage
@@ -99,19 +82,11 @@ Sub AppStart (Args() As String)
 	Log($"App version: ${VERSION}"$)
 	Log($"Open the following URL from your web browser"$)
 	Log(App.ServerUrl)
-	ConfigureDatabase
+	InitDatabase
 	StartMessageLoop
 End Sub
 
-' Set global ApiSettings from Main to HttpResponseMessage
-Public Sub SetApiMessage (Message As HttpResponseMessage)
-	Message.VerboseMode = Api.VerboseMode
-	Message.OrderedKeys = Api.OrderedKeys
-	Message.ContentType = Api.ContentType
-	Message.PayloadType = Api.PayloadType
-End Sub
-
-Public Sub ConfigureDatabase
+Private Sub InitDatabase
 	Try
 		Dim dbvar As String = "sqlite"
 		#If MariaDB
@@ -126,28 +101,28 @@ Public Sub ConfigureDatabase
 		Dim ctx As Map = File.ReadMap(File.DirApp, $"${dbvar}.ini"$)
 		DB.Initialize
 		'DB.ShowExtraLogs = True
-		MS.Initialize
-		MS.DBType = ctx.GetDefault("DbType", "")
-		Select MS.DBType
+		DBS.Initialize
+		DBS.DBType = ctx.GetDefault("DbType", "")
+		Select DBS.DBType
 			Case DB.MARIADB, DB.MYSQL
-				MS.DBHost = ctx.GetDefault("DbHost", "")
-				MS.DBPort = ctx.GetDefault("DbPort", "")
-				MS.DBName = ctx.GetDefault("DbName", "")
-				MS.DriverClass = ctx.GetDefault("DriverClass", "")
-				MS.JdbcUrl = ctx.GetDefault("JdbcUrl", "")
-				MS.User = ctx.GetDefault("User", "")
-				MS.Password = ctx.GetDefault("Password", "")
-				MS.MaxPoolSize = ctx.GetDefault("MaxPoolSize", 0)
+				DBS.DBHost = ctx.GetDefault("DbHost", "")
+				DBS.DBPort = ctx.GetDefault("DbPort", "")
+				DBS.DBName = ctx.GetDefault("DbName", "")
+				DBS.Driver = ctx.GetDefault("DriverClass", "")
+				DBS.JdbcUrl = ctx.GetDefault("JdbcUrl", "")
+				DBS.User = ctx.GetDefault("User", "")
+				DBS.Password = ctx.GetDefault("Password", "")
+				DBS.MaxPoolSize = ctx.GetDefault("MaxPoolSize", 0)
 			Case DB.SQLITE
-				MS.DBDir = ctx.GetDefault("DbDir", File.DirApp)
-				MS.DBFile = ctx.GetDefault("DbFile", "Pakai.db")
-				MS.JournalMode = "WAL"
+				DBS.DBDir = ctx.GetDefault("DbDir", File.DirApp)
+				DBS.DBFile = ctx.GetDefault("DbFile", "Pakai.db")
+				DBS.JournalMode = "WAL"
 			Case Else
-				LogColor($"${MS.DBType} not supported!"$, COLOR_RED)
+				LogColor($"${DBS.DBType} not supported!"$, COLOR_RED)
 				Log("Application is terminated.")
 				ExitApplication
 		End Select
-		DB.Settings = MS
+		DB.Settings = DBS
 
 		LogColor("Checking database...", COLOR_BLUE)
 		Select DB.DbType
@@ -176,10 +151,11 @@ Public Sub ConfigureDatabase
 			Return
 		End If
 		LogColor($"${DB.DbType} database existed!"$, COLOR_BLUE)
-		'AddUsersTable
 		If UsePool(DB.DbType) Then
 			DB.InitPool
 		End If
+		' Create new tables after database has already created
+		'UsersModel.CreateUsersTable
 	Catch
 		LogError(LastException.Message)
 		LogColor("Error checking database!", COLOR_RED)
@@ -188,7 +164,7 @@ Public Sub ConfigureDatabase
 	End Try
 End Sub
 
-Private Sub UsePool (Name As String) As Boolean
+Public Sub UsePool (Name As String) As Boolean
 	Dim DbArray() As String = Array As String(DB.MARIADB, DB.MYSQL)
 	Return DbArray.As(List).IndexOf(Name) > -1
 End Sub
@@ -213,6 +189,7 @@ Private Sub CreateDatabase
 
 	DB.ShowExtraLogs = True
 	DB.UseTimestamps = True
+	DB.QueryExecute = False
 	DB.QueryAddToBatch = True
 	
 	DB.Table = "tbl_categories"
@@ -220,8 +197,8 @@ Private Sub CreateDatabase
 	DB.Create
 
 	DB.Columns = Array("category_name")
-	DB.Inserts = Array("Hardwares")
-	DB.Inserts = Array("Toys")
+	DB.InsertWithParams = Array("Hardwares")
+	DB.InsertWithParams = Array("Toys")
 
 	DB.Table = "tbl_products"
 	DB.Columns.Add(CreateMap("Name": "category_id", "Type": DB.INTEGER, "Null": False))
@@ -234,9 +211,9 @@ Private Sub CreateDatabase
 	DB.Create
 	
 	DB.Columns = Array("category_id", "product_code", "product_name", "product_price")
-	DB.Inserts = Array(2, "T001", "Teddy Bear", 99.9)
-	DB.Inserts = Array(1, "H001", "Hammer", 15.75)
-	DB.Inserts = Array(2, "T002", "Optimus Prime", 1000)
+	DB.InsertWithParams = Array(2, "T001", "Teddy Bear", 99.9)
+	DB.InsertWithParams = Array(1, "H001", "Hammer", 15.75)
+	DB.InsertWithParams = Array(2, "T002", "Optimus Prime", 1000)
 	
 	Wait For (DB.ExecuteBatchAsync) Complete (Success As Boolean)
 	If Success Then
@@ -245,43 +222,14 @@ Private Sub CreateDatabase
 		LogColor("Database creation failed!", COLOR_RED)
 	End If
 	DB.Close
-End Sub
-
-' Add sample code for creating new table
-Public Sub AddUsersTable
-	LogColor("Creating users table...", COLOR_BLUE)
-	If UsePool(DB.DbType) Then
-		DB.InitPool
-	End If
-
-	DB.ShowExtraLogs = True
-	DB.UseTimestamps = True
-	DB.QueryAddToBatch = True
-
-	DB.Table = "tbl_users"
-	DB.Columns.Add(CreateMap("Name": "first_name", "Null": False))
-	DB.Columns.Add(CreateMap("Name": "last_name", "Null": False))
-	DB.Columns.Add(CreateMap("Name": "email", "Null": False))
-	DB.Columns.Add(CreateMap("Name": "hash", "Null": False))
-	DB.Columns.Add(CreateMap("Name": "salt", "Null": False))
-	DB.Columns.Add(CreateMap("Name": "admin", "Null": False, "Type": DB.INTEGER, "Default": "0"))
-	DB.Columns.Add(CreateMap("Name": "active", "Null": False, "Type": DB.INTEGER, "Default": "0"))
-	DB.Create
-	
-	Wait For (DB.ExecuteBatchAsync) Complete (Success As Boolean)
-	If Success Then
-		LogColor("Table is created successfully!", COLOR_BLUE)
-	Else
-		LogColor("Table creation failed!", COLOR_RED)
-	End If
-	DB.Close
+	DB.QueryExecute = True
 End Sub
 
 Public Sub CurrentDateTime As String
 	Dim CurrentDateFormat As String = DateTime.DateFormat
 	DateTime.DateFormat = "yyyy-MM-dd HH:mm:ss"
 	DateTime.SetTimeZone(0)
-	Dim Current As String = DateTime.Date(DateTime.Now)
+	Dim Now As String = DateTime.Date(DateTime.Now)
 	DateTime.DateFormat = CurrentDateFormat
-	Return Current
+	Return Now
 End Sub
