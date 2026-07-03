@@ -1,0 +1,13 @@
+{
+    "Version": "6.60",
+    "Resources": [
+        {
+            "File": "www\\assets\\js\\cdn.min.js",
+            "Link": "https://raw.githubusercontent.com/pyhoon/pakai-server-b4j/refs/heads/main/source/Objects/www/assets/js/cdn.min.js"
+        },
+        {
+            "File": "www\\assets\\js\\htmx.min.js",
+            "Link": "https://raw.githubusercontent.com/pyhoon/pakai-server-b4j/refs/heads/main/source/Objects/www/assets/js/htmx.min.js"
+        }
+    ]
+}
