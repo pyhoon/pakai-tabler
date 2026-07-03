@@ -5,6 +5,8 @@ Objects/*.jar
 Objects/*.db*
 Objects/keystore*
 Objects/help.html
+Objects/ide_state.json
+Objects/Pakai-Tabler.json
 
 # ignore ALL files in these directories
 AutoBackups
